@@ -1,0 +1,12 @@
+# Redirect all routes to index.html for SPA behavior
+/* /index.html 200
+
+# Specific redirects for better SEO
+/home /index.html 200
+/shop /camera-rental.html 200
+/booking /studio-booking.html 200
+/admin /admin-dashboard.html 200
+/login /login.html 200
+/cart /cart.html 200
+/track /order-tracking.html 200
+/contact /contact.html 200 
