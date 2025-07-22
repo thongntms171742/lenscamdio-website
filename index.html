@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LENSCAMDIO - Đặt lịch thuê studio chụp ảnh & cho thuê máy ảnh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="navbar-brand">
+                    <i class="fas fa-camera"></i> LENSCAMDIO
+                </a>
+                <div class="navbar-nav d-flex">
+                    <a href="index.html" class="nav-link active">Trang chủ</a>
+                    <a href="studio-booking.html" class="nav-link">Đặt lịch Studio</a>
+                    <a href="camera-rental.html" class="nav-link">Thuê máy ảnh</a>
+                    <a href="products.html" class="nav-link">Sản phẩm</a>
+                    <a href="my-booking.html" class="nav-link">Lịch của tôi</a>
+                    <a href="contact.html" class="nav-link">Liên hệ</a>
+                    <a href="cart.html" class="nav-link cart-link">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng (<span id="cart-count">0</span>)
+                    </a>
+                    <a href="login.html" class="nav-link login-btn">
+                        <i class="fas fa-user"></i> Đăng nhập
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="text-center">
+                <h1>Chào mừng đến với LENSCAMDIO</h1>
+                <p>Không gian chụp ảnh chuyên nghiệp và dịch vụ cho thuê thiết bị hàng đầu</p>
+                <div class="mt-4">
+                    <a href="studio-booking.html" class="btn-primary me-3">Đặt lịch Studio</a>
+                    <a href="camera-rental.html" class="btn-outline-primary">Thuê máy ảnh</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Dashboard Section (shown when logged in) -->
+    <section class="section user-dashboard-section" id="userDashboard" style="display: none;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Dashboard của bạn</h2>
+                <p class="section-subtitle">Tổng quan hoạt động và đơn hàng</p>
+            </div>
+            
+            <!-- User Stats -->
+            <div class="row mb-5">
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="user-total-orders">0</h3>
+                            <p>Tổng đơn hàng</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="user-total-bookings">0</h3>
+                            <p>Lịch đặt</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="user-total-spent">0đ</h3>
+                            <p>Tổng chi tiêu</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="user-pending-orders">0</h3>
+                            <p>Đơn chờ xử lý</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h4><i class="fas fa-history"></i> Hoạt động gần đây</h4>
+                            <a href="my-booking.html" class="btn-outline-primary">Xem tất cả</a>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <div id="recent-activities">
+                                <p class="text-muted text-center py-4">Chưa có hoạt động nào</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h4><i class="fas fa-truck"></i> Đơn hàng gần đây</h4>
+                            <a href="order-tracking.html" class="btn-outline-primary">Theo dõi</a>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <div id="recent-orders">
+                                <p class="text-muted text-center py-4">Chưa có đơn hàng nào</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Studios Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Studio nổi bật</h2>
+            <p class="section-subtitle">Khám phá những studio chụp ảnh đẹp nhất của chúng tôi</p>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Studio Modern A" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Studio Modern A</h5>
+                            <p class="card-text">Studio hiện đại với không gian rộng rãi, ánh sáng tự nhiên tuyệt vời, phù hợp cho chụp ảnh thời trang và portrait.</p>
+                            <div class="price">1.200.000đ/ngày</div>
+                            <button class="btn-primary book-btn" data-studio-name="Studio Modern A">Đặt lịch ngay</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Studio Vintage B" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Studio Vintage B</h5>
+                            <p class="card-text">Phong cách vintage cổ điển với đồ đạc antique, tạo nên những bức ảnh mang đậm chất retro và nghệ thuật.</p>
+                            <div class="price">1.500.000đ/ngày</div>
+                            <button class="btn-primary book-btn" data-studio-name="Studio Vintage B">Đặt lịch ngay</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Studio Minimalist C" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Studio Minimalist C</h5>
+                            <p class="card-text">Thiết kế tối giản với tông màu trắng chủ đạo, phù hợp cho chụp ảnh sản phẩm và concept clean.</p>
+                            <div class="price">1.000.000đ/ngày</div>
+                            <button class="btn-primary book-btn" data-studio-name="Studio Minimalist C">Đặt lịch ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Camera Equipment Section -->
+    <section class="section" style="background-color: var(--bg-light);">
+        <div class="container">
+            <h2 class="section-title">Thiết bị nổi bật</h2>
+            <p class="section-subtitle">Máy ảnh và phụ kiện chuyên nghiệp cho thuê</p>
+            
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                             alt="Canon EOS R5" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Canon EOS R5</h5>
+                            <p class="card-text">Máy ảnh mirrorless full-frame cao cấp, 45MP.</p>
+                            <div class="price">800.000đ/ngày</div>
+                            <button class="btn-primary add-to-cart-btn" data-item-name="Canon EOS R5">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                             alt="Sony A7R IV" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Sony A7R IV</h5>
+                            <p class="card-text">Máy ảnh mirrorless 61MP, chất lượng hình ảnh tuyệt vời.</p>
+                            <div class="price">900.000đ/ngày</div>
+                            <button class="btn-primary add-to-cart-btn" data-item-name="Sony A7R IV">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                             alt="Nikon Z9" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Nikon Z9</h5>
+                            <p class="card-text">Máy ảnh mirrorless flagship, 45.7MP với khả năng quay video 8K.</p>
+                            <div class="price">1.000.000đ/ngày</div>
+                            <button class="btn-primary add-to-cart-btn" data-item-name="Nikon Z9">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                             alt="Ống kính 85mm f/1.4" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Ống kính 85mm f/1.4</h5>
+                            <p class="card-text">Ống kính portrait chuyên nghiệp, bokeh đẹp.</p>
+                            <div class="price">300.000đ/ngày</div>
+                            <button class="btn-primary add-to-cart-btn" data-item-name="Ống kính 85mm f/1.4">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="camera-rental.html" class="btn-outline-primary">Xem tất cả thiết bị</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Tại sao chọn Studio Project?</h2>
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>Chất lượng cao</h4>
+                    <p>Studio được trang bị hiện đại, thiết bị chuyên nghiệp từ các thương hiệu hàng đầu thế giới.</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>Linh hoạt 24/7</h4>
+                    <p>Đặt lịch online dễ dàng, hỗ trợ khách hàng 24/7, linh hoạt về thời gian thuê.</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Hỗ trợ chuyên nghiệp</h4>
+                    <p>Đội ngũ tư vấn giàu kinh nghiệm, hỗ trợ kỹ thuật và tư vấn concept chụp ảnh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>LENSCAMDIO</h5>
+                    <p>Không gian chụp ảnh chuyên nghiệp và dịch vụ cho thuê thiết bị hàng đầu tại Việt Nam.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Dịch vụ</h5>
+                    <ul class="footer-links">
+                        <li><a href="studio-booking.html">Thuê Studio</a></li>
+                        <li><a href="camera-rental.html">Thuê máy ảnh</a></li>
+                        <li><a href="#">Chụp ảnh sự kiện</a></li>
+                        <li><a href="#">Quay video</a></li>
+                        <li><a href="#">Tư vấn concept</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Hỗ trợ</h5>
+                    <ul class="footer-links">
+                        <li><a href="contact.html">Liên hệ</a></li>
+                        <li><a href="#">Hướng dẫn đặt lịch</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Chính sách</a></li>
+                        <li><a href="#">Điều khoản</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Liên hệ</h5>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
+                        <p><i class="fas fa-phone"></i> 0123-456-789</p>
+                        <p><i class="fas fa-envelope"></i> info@lenscamdio.com</p>
+                        <p><i class="fas fa-clock"></i> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2024 LENSCAMDIO. Tất cả quyền được bảo lưu.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">Thiết kế bởi LENSCAMDIO Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+    <button class="floating-cart-btn" onclick="window.location.href='cart.html'">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge hidden" id="floating-cart-badge">0</span>
+    </button>
+
+    <!-- Simple Chat Box -->
+    <div id="chatbox-root">
+      <div id="chatbox-container">
+                        <div id="chatbox-header">Trợ lý AI LENSCAMDIO</div>
+        <div id="chatbox-messages"></div>
+        <div id="chatbox-input-row">
+          <input id="chatbox-input" type="text" placeholder="Nhập câu hỏi...">
+          <button id="chatbox-send">Gửi</button>
+        </div>
+      </div>
+      <button id="chatbox-toggle" title="Chat với LENSCAMDIO">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 19V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7l-3 4z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // User Dashboard functionality
+        function loadUserDashboard() {
+            const userSession = localStorage.getItem('userSession');
+            const userDashboard = document.getElementById('userDashboard');
+            
+            if (userSession) {
+                const userData = JSON.parse(userSession);
+                
+                // Show dashboard for logged in users (except admin)
+                if (userData.type !== 'owner') {
+                    userDashboard.style.display = 'block';
+                    
+                    // Load user statistics
+                    loadUserStats();
+                    loadRecentActivities();
+                    loadRecentOrders();
+                }
+            }
+        }
+        
+        function loadUserStats() {
+            // Get data from localStorage
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            
+            // Calculate stats
+            const totalOrders = orders.length;
+            const totalBookings = bookings.length;
+            const totalSpent = orders.reduce((sum, order) => {
+                return sum + parseInt(order.total.replace(/[^\d]/g, ''));
+            }, 0);
+            const pendingOrders = orders.filter(order => order.status === 'pending').length;
+            
+            // Update UI
+            document.getElementById('user-total-orders').textContent = totalOrders;
+            document.getElementById('user-total-bookings').textContent = totalBookings;
+            document.getElementById('user-total-spent').textContent = formatCurrency(totalSpent);
+            document.getElementById('user-pending-orders').textContent = pendingOrders;
+        }
+        
+        function loadRecentActivities() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+            
+            // Combine all activities
+            const activities = [
+                ...orders.map(order => ({
+                    type: 'order',
+                    title: `Đặt hàng ${order.code}`,
+                    description: `${order.items.length} sản phẩm - ${order.total}`,
+                    timestamp: order.createdAt,
+                    status: order.status,
+                    icon: 'fas fa-shopping-cart'
+                })),
+                ...contacts.map(contact => ({
+                    type: 'contact',
+                    title: 'Gửi liên hệ',
+                    description: contact.subject,
+                    timestamp: contact.timestamp,
+                    status: 'sent',
+                    icon: 'fas fa-envelope'
+                }))
+            ];
+            
+            // Sort by timestamp and take latest 5
+            activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const recentActivities = activities.slice(0, 5);
+            
+            const container = document.getElementById('recent-activities');
+            if (recentActivities.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-4">Chưa có hoạt động nào</p>';
+                return;
+            }
+            
+            container.innerHTML = recentActivities.map(activity => `
+                <div class="activity-item d-flex align-items-center py-3 border-bottom">
+                    <div class="activity-icon me-3">
+                        <i class="${activity.icon}" style="color: var(--primary-color);"></i>
+                    </div>
+                    <div class="activity-content flex-fill">
+                        <h6 class="mb-1">${activity.title}</h6>
+                        <p class="mb-1 text-muted small">${activity.description}</p>
+                        <small class="text-muted">${formatTimeAgo(activity.timestamp)}</small>
+                    </div>
+                    <div class="activity-status">
+                        <span class="badge ${getStatusClass(activity.status)}">${getStatusText(activity.status)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadRecentOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const recentOrders = orders.slice(0, 3);
+            
+            const container = document.getElementById('recent-orders');
+            if (recentOrders.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-4">Chưa có đơn hàng nào</p>';
+                return;
+            }
+            
+            container.innerHTML = recentOrders.map(order => `
+                <div class="order-item d-flex align-items-center py-3 border-bottom">
+                    <div class="order-info flex-fill">
+                        <h6 class="mb-1">${order.code}</h6>
+                        <p class="mb-1 text-muted small">${order.items.length} sản phẩm</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">${formatTimeAgo(order.createdAt)}</small>
+                            <span class="badge ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Helper functions
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        function formatTimeAgo(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diffInHours = Math.floor((now - time) / (1000 * 60 * 60));
+            
+            if (diffInHours < 1) return 'Vừa xong';
+            if (diffInHours < 24) return `${diffInHours} giờ trước`;
+            
+            const diffInDays = Math.floor(diffInHours / 24);
+            if (diffInDays < 7) return `${diffInDays} ngày trước`;
+            
+            return time.toLocaleDateString('vi-VN');
+        }
+        
+        function getStatusClass(status) {
+            const classes = {
+                'pending': 'badge-warning',
+                'confirmed': 'badge-success',
+                'completed': 'badge-info',
+                'cancelled': 'badge-danger',
+                'sent': 'badge-info'
+            };
+            return classes[status] || 'badge-secondary';
+        }
+        
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Chờ xử lý',
+                'confirmed': 'Đã xác nhận',
+                'completed': 'Hoàn thành',
+                'cancelled': 'Đã hủy',
+                'sent': 'Đã gửi'
+            };
+            return texts[status] || 'Không xác định';
+        }
+        
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserDashboard();
+            
+            // Refresh dashboard every 30 seconds
+            setInterval(loadUserDashboard, 30000);
+        });
+    </script>
+    
+    <style>
+        /* Dashboard Styles */
+        .user-dashboard-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            color: #1e293b;
+        }
+        
+        .stat-info p {
+            margin: 0;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .dashboard-card-header h4 {
+            margin: 0;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .dashboard-card-body {
+            padding: 1.5rem;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none !important;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .badge-warning { background: #fbbf24; color: white; }
+        .badge-success { background: #10b981; color: white; }
+        .badge-info { background: #3b82f6; color: white; }
+        .badge-danger { background: #ef4444; color: white; }
+        .badge-secondary { background: #6b7280; color: white; }
+        
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .dashboard-card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</body>
+</html> 

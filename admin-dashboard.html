@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LENSCAMDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        /* Admin Dashboard Specific Styles */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .admin-sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-header .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .sidebar-header .toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, transparent 100%);
+            color: #3b82f6;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #3b82f6;
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar.collapsed + .admin-main {
+            margin-left: 80px;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+        
+        .admin-content {
+            padding: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-title {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .stat-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-card-change.positive {
+            color: #059669;
+        }
+
+        .stat-card-change.negative {
+            color: #dc2626;
+        }
+
+        .dashboard-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .admin-table td {
+            color: #6b7280;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon.edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-icon.delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-icon.view {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-action-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .quick-action-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .user-profile:hover {
+            background: #f1f5f9;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .admin-sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+            .admin-header {
+                padding: 1rem;
+            }
+
+            .admin-content {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hidden content sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Additional status badges */
+        .status-badge.shipping {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Form styles */
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        /* Table improvements */
+        .admin-table td {
+            vertical-align: middle;
+        }
+
+        .admin-table .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+        }
+
+        /* Chart placeholder improvements */
+        .chart-container {
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+        }
+
+        /* Utility classes */
+        .me-2 { margin-right: 0.5rem; }
+        .me-3 { margin-right: 1rem; }
+        .me-4 { margin-right: 1.5rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .mt-4 { margin-top: 1.5rem; }
+        .text-center { text-align: center; }
+
+        /* Negative change indicator */
+        .stat-card-change.negative {
+            color: #64748b;
+        }
+
+        .stat-card-change.negative i {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+        <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-camera"></i> LENSCAMDIO
+                </div>
+                <button class="toggle-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+        </div>
+
+        <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Tổng quan</div>
+                    <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="showSection('analytics')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Phân tích</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Quản lý</div>
+                    <a href="#" class="nav-item" onclick="showSection('studios')">
+                        <i class="fas fa-building"></i>
+                        <span>Quản lý Studio</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="showSection('equipment')">
+                        <i class="fas fa-camera"></i>
+                        <span>Thiết bị</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="showSection('bookings')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Đặt lịch</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="showSection('orders')">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Đơn hàng</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="showSection('customers')">
+                        <i class="fas fa-users"></i>
+                        <span>Khách hàng</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Cài đặt</div>
+                    <a href="#" class="nav-item" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="showSection('profile')">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Hồ sơ</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <a href="index.html" class="nav-item">
+                        <i class="fas fa-home"></i>
+                        <span>Về trang chủ</span>
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </div>
+        </nav>
+    </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="admin-header-left">
+                    <h1 id="page-title">Dashboard</h1>
+                </div>
+                <div class="admin-header-right">
+                    <button class="btn-icon view" title="Thông báo">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="user-profile" onclick="showSection('profile')">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Admin LENSCAMDIO</h4>
+                            <p>Quản trị viên</p>
+                        </div>
+                    </div>
+                </div>
+        </header>
+
+            <!-- Content -->
+            <div class="admin-content">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="content-section active">
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <h3 class="stat-card-title">Tổng Đặt Lịch</h3>
+                                <div class="stat-card-icon" style="background: #3b82f6;">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-value">156</div>
+                            <div class="stat-card-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12% so với tháng trước</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <h3 class="stat-card-title">Doanh Thu</h3>
+                                <div class="stat-card-icon" style="background: #10b981;">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-value">89.2M</div>
+                            <div class="stat-card-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8.5% so với tháng trước</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <h3 class="stat-card-title">Thiết Bị Thuê</h3>
+                                <div class="stat-card-icon" style="background: #f59e0b;">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-value">48</div>
+                            <div class="stat-card-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>-3% so với tháng trước</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <h3 class="stat-card-title">Khách Hàng Mới</h3>
+                                <div class="stat-card-icon" style="background: #8b5cf6;">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-value">23</div>
+                            <div class="stat-card-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+15% so với tháng trước</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Thao tác nhanh</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="quick-actions">
+                                <a href="#" class="quick-action-card" onclick="showSection('studios')">
+                                    <i class="fas fa-plus"></i>
+                                    <h4>Thêm Studio Mới</h4>
+                                    <p>Tạo studio cho thuê</p>
+                                </a>
+                                <a href="#" class="quick-action-card" onclick="showSection('equipment')">
+                                    <i class="fas fa-camera-retro"></i>
+                                    <h4>Cập Nhật Thiết Bị</h4>
+                                    <p>Quản lý máy ảnh & phụ kiện</p>
+                                </a>
+                                <a href="#" class="quick-action-card" onclick="showSection('bookings')">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <h4>Xem Đặt Lịch</h4>
+                                    <p>Quản lý lịch đặt studio</p>
+                                </a>
+                                <a href="#" class="quick-action-card" onclick="showSection('analytics')">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <h4>Báo Cáo</h4>
+                                    <p>Xem thống kê chi tiết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Hoạt động gần đây</h2>
+                            <button class="btn-outline-primary">Xem tất cả</button>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thời gian</th>
+                                            <th>Khách hàng</th>
+                                            <th>Hoạt động</th>
+                                            <th>Trạng thái</th>
+                                            <th>Số tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>10:30 AM</td>
+                                            <td>Nguyễn Văn A</td>
+                                            <td>Đặt lịch Studio Modern A</td>
+                                            <td><span class="status-badge pending">Chờ duyệt</span></td>
+                                            <td>1.200.000đ</td>
+                                        </tr>
+                                        <tr>
+                                            <td>09:15 AM</td>
+                                            <td>Trần Thị B</td>
+                                            <td>Thuê Canon EOS R5</td>
+                                            <td><span class="status-badge approved">Đã duyệt</span></td>
+                                            <td>800.000đ</td>
+                                        </tr>
+                                        <tr>
+                                            <td>08:45 AM</td>
+                                            <td>Lê Văn C</td>
+                                            <td>Hoàn thành thuê studio</td>
+                                            <td><span class="status-badge completed">Hoàn thành</span></td>
+                                            <td>1.500.000đ</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Sections (Hidden by default) -->
+                <div id="studios" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Quản lý Studio</h2>
+                            <button class="btn-primary" onclick="showAddStudioModal()">
+                                <i class="fas fa-plus"></i> Thêm Studio
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Studio</th>
+                                            <th>Loại</th>
+                                            <th>Giá/ngày</th>
+                                            <th>Trạng thái</th>
+                                            <th>Đặt lịch</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                                    <div>
+                                                        <strong>Studio Modern A</strong>
+                                                        <br><small>Không gian hiện đại</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Modern</td>
+                                            <td>1.200.000đ</td>
+                                            <td><span class="status-badge approved">Hoạt động</span></td>
+                                            <td>15 lượt/tháng</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon delete" title="Xóa"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <img src="https://images.unsplash.com/photo-1586297135537-94bc9ba060aa" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                                    <div>
+                                                        <strong>Studio Vintage B</strong>
+                                                        <br><small>Phong cách cổ điển</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Vintage</td>
+                                            <td>1.500.000đ</td>
+                                            <td><span class="status-badge approved">Hoạt động</span></td>
+                                            <td>12 lượt/tháng</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon delete" title="Xóa"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="equipment" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Quản lý Thiết bị</h2>
+                            <button class="btn-primary">
+                                <i class="fas fa-plus"></i> Thêm Thiết bị
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thiết bị</th>
+                                            <th>Loại</th>
+                                            <th>Giá thuê/ngày</th>
+                                            <th>Tình trạng</th>
+                                            <th>Lượt thuê</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                                    <div>
+                                                        <strong>Canon EOS R5</strong>
+                                                        <br><small>Máy ảnh mirrorless 45MP</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Camera</td>
+                                            <td>800.000đ</td>
+                                            <td><span class="status-badge approved">Sẵn sàng</span></td>
+                                            <td>28 lượt</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon delete" title="Xóa"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <img src="https://images.unsplash.com/photo-1586297135537-94bc9ba060aa" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                                    <div>
+                                                        <strong>Ống kính 85mm f/1.4</strong>
+                                                        <br><small>Ống kính portrait chuyên nghiệp</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Lens</td>
+                                            <td>300.000đ</td>
+                                            <td><span class="status-badge pending">Đang thuê</span></td>
+                                            <td>15 lượt</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon delete" title="Xóa"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bookings" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Quản lý Đặt lịch</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã đặt lịch</th>
+                                            <th>Khách hàng</th>
+                                            <th>Studio</th>
+                                            <th>Ngày</th>
+                                            <th>Thời gian</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>#BK001</td>
+                                            <td>Nguyễn Văn A</td>
+                                            <td>Studio Modern A</td>
+                                            <td>25/12/2024</td>
+                                            <td>09:00 - 17:00</td>
+                                            <td><span class="status-badge pending">Chờ duyệt</span></td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon approved" title="Duyệt" style="background: #d1fae5; color: #065f46;"><i class="fas fa-check"></i></button>
+                                                    <button class="btn-icon delete" title="Từ chối"><i class="fas fa-times"></i></button>
+                                                    <button class="btn-icon view" title="Xem"><i class="fas fa-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#BK002</td>
+                                            <td>Trần Thị B</td>
+                                            <td>Studio Vintage B</td>
+                                            <td>24/12/2024</td>
+                                            <td>14:00 - 18:00</td>
+                                            <td><span class="status-badge approved">Đã duyệt</span></td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Sửa"><i class="fas fa-edit"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Add more sections as needed -->
+                                <div id="orders" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Quản lý Đơn hàng</h2>
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn-outline-primary">
+                                    <i class="fas fa-filter"></i> Bộ lọc
+                                </button>
+                                <button class="btn-outline-primary">
+                                    <i class="fas fa-download"></i> Xuất Excel
+                                </button>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <!-- Order Statistics -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Chờ xử lý</h3>
+                                            <div class="stat-card-icon" style="background: #f59e0b;">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">12</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Đang giao</h3>
+                                            <div class="stat-card-icon" style="background: #3b82f6;">
+                                                <i class="fas fa-truck"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">8</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Hoàn thành</h3>
+                                            <div class="stat-card-icon" style="background: #10b981;">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">156</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Đã hủy</h3>
+                                            <div class="stat-card-icon" style="background: #ef4444;">
+                                                <i class="fas fa-times-circle"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">3</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Orders Table -->
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Ngày đặt</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>#LC001234</strong></td>
+                                            <td>
+                                                <div>
+                                                    <strong>Nguyễn Văn A</strong><br>
+                                                    <small>0123456789</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    Canon EOS R5 x1<br>
+                                                    <small>Ống kính 85mm x1</small>
+                                                </div>
+                                            </td>
+                                            <td><strong>1.150.000đ</strong></td>
+                                            <td>20/12/2024</td>
+                                            <td><span class="status-badge completed">Hoàn thành</span></td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon" title="In hóa đơn" style="background: #dbeafe; color: #1e40af;"><i class="fas fa-print"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>#LC001235</strong></td>
+                                            <td>
+                                                <div>
+                                                    <strong>Trần Thị B</strong><br>
+                                                    <small>0987654321</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    Sony A7R IV x1<br>
+                                                    <small>3 ngày thuê</small>
+                                                </div>
+                                            </td>
+                                            <td><strong>950.000đ</strong></td>
+                                            <td>22/12/2024</td>
+                                            <td><span class="status-badge shipping">Đang giao</span></td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon" title="Cập nhật vận chuyển" style="background: #fed7e2; color: #97266d;"><i class="fas fa-truck"></i></button>
+                                                    <button class="btn-icon" title="Liên hệ khách hàng" style="background: #e0e7ff; color: #5b21b6;"><i class="fas fa-phone"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>#LC001236</strong></td>
+                                            <td>
+                                                <div>
+                                                    <strong>Lê Văn C</strong><br>
+                                                    <small>0369258147</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    Nikon Z9 x1<br>
+                                                    <small>2 ngày thuê</small>
+                                                </div>
+                                            </td>
+                                            <td><strong>1.050.000đ</strong></td>
+                                            <td>23/12/2024</td>
+                                            <td><span class="status-badge pending">Chờ duyệt</span></td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon" title="Duyệt đơn" style="background: #d1fae5; color: #065f46;"><i class="fas fa-check"></i></button>
+                                                    <button class="btn-icon delete" title="Từ chối"><i class="fas fa-times"></i></button>
+                                                    <button class="btn-icon view" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                                <div id="customers" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Quản lý Khách hàng</h2>
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn-primary">
+                                    <i class="fas fa-plus"></i> Thêm khách hàng
+                                </button>
+                                <button class="btn-outline-primary">
+                                    <i class="fas fa-download"></i> Xuất danh sách
+                                </button>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <!-- Customer Statistics -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Tổng khách hàng</h3>
+                                            <div class="stat-card-icon" style="background: #3b82f6;">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">482</div>
+                                        <div class="stat-card-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>+15 tuần này</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Khách VIP</h3>
+                                            <div class="stat-card-icon" style="background: #f59e0b;">
+                                                <i class="fas fa-crown"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">28</div>
+                                        <div class="stat-card-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>+3 tuần này</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Khách mới</h3>
+                                            <div class="stat-card-icon" style="background: #10b981;">
+                                                <i class="fas fa-user-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">23</div>
+                                        <div class="stat-card-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>Tháng này</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Tỷ lệ quay lại</h3>
+                                            <div class="stat-card-icon" style="background: #8b5cf6;">
+                                                <i class="fas fa-redo"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">68%</div>
+                                        <div class="stat-card-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>+5% tháng trước</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search and Filter -->
+                            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" placeholder="Tìm theo tên, email, SĐT...">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control">
+                                            <option>Tất cả loại</option>
+                                            <option>Khách VIP</option>
+                                            <option>Khách thường</option>
+                                            <option>Khách mới</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control">
+                                            <option>Tất cả trạng thái</option>
+                                            <option>Hoạt động</option>
+                                            <option>Không hoạt động</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn-primary me-2">
+                                            <i class="fas fa-search"></i> Tìm kiếm
+                                        </button>
+                                        <button class="btn-outline-primary">
+                                            <i class="fas fa-filter"></i> Bộ lọc nâng cao
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Customers Table -->
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Khách hàng</th>
+                                            <th>Loại</th>
+                                            <th>Tổng đơn hàng</th>
+                                            <th>Tổng chi tiêu</th>
+                                            <th>Đăng ký</th>
+                                            <th>Lần cuối</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                                        A
+                                                    </div>
+                                                    <div>
+                                                        <strong>Nguyễn Văn A</strong><br>
+                                                        <small>nguyenvana@email.com</small><br>
+                                                        <small>0123456789</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="status-badge" style="background: #fef3c7; color: #92400e;">VIP</span></td>
+                                            <td><strong>15</strong> đơn</td>
+                                            <td><strong>18.500.000đ</strong></td>
+                                            <td>15/06/2024</td>
+                                            <td>20/12/2024</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem hồ sơ"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon" title="Gửi email" style="background: #dbeafe; color: #1e40af;"><i class="fas fa-envelope"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                                        B
+                                                    </div>
+                                                    <div>
+                                                        <strong>Trần Thị B</strong><br>
+                                                        <small>tranthib@email.com</small><br>
+                                                        <small>0987654321</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="status-badge" style="background: #d1fae5; color: #065f46;">Thường</span></td>
+                                            <td><strong>8</strong> đơn</td>
+                                            <td><strong>6.200.000đ</strong></td>
+                                            <td>20/08/2024</td>
+                                            <td>22/12/2024</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem hồ sơ"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon" title="Gửi email" style="background: #dbeafe; color: #1e40af;"><i class="fas fa-envelope"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                                        C
+                                                    </div>
+                                                    <div>
+                                                        <strong>Lê Văn C</strong><br>
+                                                        <small>levanc@email.com</small><br>
+                                                        <small>0369258147</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="status-badge" style="background: #dbeafe; color: #1e40af;">Mới</span></td>
+                                            <td><strong>1</strong> đơn</td>
+                                            <td><strong>1.050.000đ</strong></td>
+                                            <td>23/12/2024</td>
+                                            <td>23/12/2024</td>
+                                            <td>
+                                                <div class="action-btns">
+                                                    <button class="btn-icon view" title="Xem hồ sơ"><i class="fas fa-eye"></i></button>
+                                                    <button class="btn-icon edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></button>
+                                                    <button class="btn-icon" title="Gửi email chào mừng" style="background: #fed7e2; color: #97266d;"><i class="fas fa-gift"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                                <div id="analytics" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Phân tích & Báo cáo</h2>
+                            <div style="display: flex; gap: 1rem;">
+                                <select class="form-control" style="width: 200px;">
+                                    <option>30 ngày qua</option>
+                                    <option>90 ngày qua</option>
+                                    <option>6 tháng qua</option>
+                                    <option>1 năm qua</option>
+                                </select>
+                                <button class="btn-outline-primary">
+                                    <i class="fas fa-download"></i> Xuất báo cáo
+                                </button>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <!-- Analytics Overview -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Doanh thu theo tháng</h3>
+                                        </div>
+                                        <div class="chart-container" style="height: 250px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                            <i class="fas fa-chart-line" style="font-size: 3rem; color: #3b82f6; margin-bottom: 1rem;"></i>
+                                            <p style="color: #64748b; text-align: center;">
+                                                📊 Biểu đồ doanh thu<br>
+                                                <small>Tích hợp Chart.js để hiển thị doanh thu theo thời gian</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Sản phẩm được thuê nhiều nhất</h3>
+                                        </div>
+                                        <div class="chart-container" style="height: 250px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                            <i class="fas fa-chart-pie" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
+                                            <p style="color: #64748b; text-align: center;">
+                                                📈 Biểu đồ tròn<br>
+                                                <small>Thống kê sản phẩm theo lượt thuê</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Key Metrics -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Doanh thu trung bình/đơn</h3>
+                                            <div class="stat-card-icon" style="background: #3b82f6;">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">1.2M</div>
+                                        <div class="stat-card-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>+8% so với tháng trước</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Tỷ lệ chuyển đổi</h3>
+                                            <div class="stat-card-icon" style="background: #10b981;">
+                                                <i class="fas fa-percentage"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">24%</div>
+                                        <div class="stat-card-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>+3% so với tháng trước</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card">
+                                        <div class="stat-card-header">
+                                            <h3 class="stat-card-title">Thời gian thuê TB</h3>
+                                            <div class="stat-card-icon" style="background: #f59e0b;">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-card-value">3.2</div>
+                                        <div class="stat-card-change negative">
+                                            <i class="fas fa-arrow-down"></i>
+                                            <span>ngày/lần thuê</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Top Performance Tables -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Top 5 sản phẩm</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div class="table-responsive">
+                                                <table class="admin-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sản phẩm</th>
+                                                            <th>Lượt thuê</th>
+                                                            <th>Doanh thu</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><strong>Canon EOS R5</strong></td>
+                                                            <td>45 lượt</td>
+                                                            <td><strong>36.000.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Sony A7R IV</strong></td>
+                                                            <td>38 lượt</td>
+                                                            <td><strong>34.200.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Nikon Z9</strong></td>
+                                                            <td>32 lượt</td>
+                                                            <td><strong>32.000.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Ống kính 85mm</strong></td>
+                                                            <td>28 lượt</td>
+                                                            <td><strong>8.400.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Ống kính 24-70mm</strong></td>
+                                                            <td>22 lượt</td>
+                                                            <td><strong>6.600.000đ</strong></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Top 5 khách hàng</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div class="table-responsive">
+                                                <table class="admin-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Khách hàng</th>
+                                                            <th>Đơn hàng</th>
+                                                            <th>Chi tiêu</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><strong>Nguyễn Văn A</strong></td>
+                                                            <td>15 đơn</td>
+                                                            <td><strong>18.500.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Studio ABC</strong></td>
+                                                            <td>12 đơn</td>
+                                                            <td><strong>15.200.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Trần Thị B</strong></td>
+                                                            <td>8 đơn</td>
+                                                            <td><strong>9.800.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Lê Văn C</strong></td>
+                                                            <td>6 đơn</td>
+                                                            <td><strong>7.200.000đ</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Phạm Thị D</strong></td>
+                                                            <td>5 đơn</td>
+                                                            <td><strong>6.100.000đ</strong></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Cài đặt Hệ thống</h2>
+                            <button class="btn-primary">
+                                <i class="fas fa-save"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div class="row">
+                                <!-- General Settings -->
+                                <div class="col-md-6">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Cài đặt chung</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Tên công ty</label>
+                                                <input type="text" class="form-control" value="LENSCAMDIO" placeholder="Nhập tên công ty">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Email liên hệ</label>
+                                                <input type="email" class="form-control" value="info@lenscamdio.com" placeholder="Nhập email">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Số điện thoại</label>
+                                                <input type="tel" class="form-control" value="0123-456-789" placeholder="Nhập số điện thoại">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <textarea class="form-control" rows="2" placeholder="Nhập địa chỉ">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Giờ làm việc</label>
+                                                <input type="text" class="form-control" value="8:00 - 22:00" placeholder="Nhập giờ làm việc">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Business Settings -->
+                                <div class="col-md-6">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Cài đặt kinh doanh</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Phí dịch vụ mặc định</label>
+                                                <input type="number" class="form-control" value="50000" placeholder="Nhập phí dịch vụ">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Thời gian thuê tối thiểu</label>
+                                                <select class="form-control">
+                                                    <option>1 ngày</option>
+                                                    <option>2 ngày</option>
+                                                    <option>3 ngày</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Thời gian thuê tối đa</label>
+                                                <select class="form-control">
+                                                    <option>30 ngày</option>
+                                                    <option>60 ngày</option>
+                                                    <option>90 ngày</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Phí hủy đơn (%)</label>
+                                                <input type="number" class="form-control" value="10" placeholder="Nhập % phí hủy">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px;">
+                                                    <span>Tự động duyệt đơn hàng</span>
+                                                    <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                        <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payment Settings -->
+                            <div class="dashboard-section mt-4">
+                                <div class="section-header">
+                                    <h3 class="section-title" style="font-size: 1.1rem;">Cài đặt thanh toán</h3>
+                                </div>
+                                <div class="section-content">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Ngân hàng</label>
+                                                <input type="text" class="form-control" value="Vietcombank" placeholder="Tên ngân hàng">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Số tài khoản</label>
+                                                <input type="text" class="form-control" value="1234567890" placeholder="Số tài khoản">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Chủ tài khoản</label>
+                                                <input type="text" class="form-control" value="LENSCAMDIO JSC" placeholder="Tên chủ tài khoản">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <span>Chấp nhận thanh toán QR Code</span>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <span>Chấp nhận thẻ tín dụng</span>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification Settings -->
+                            <div class="dashboard-section mt-4">
+                                <div class="section-header">
+                                    <h3 class="section-title" style="font-size: 1.1rem;">Cài đặt thông báo</h3>
+                                </div>
+                                <div class="section-content">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <span>Email thông báo đơn hàng mới</span>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <span>SMS thông báo khách hàng</span>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #e5e7eb; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <span>Thông báo đơn hàng hết hạn</span>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <span>Báo cáo doanh thu hàng tuần</span>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profile" class="content-section">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Hồ sơ Quản trị viên</h2>
+                            <button class="btn-primary">
+                                <i class="fas fa-save"></i> Cập nhật hồ sơ
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div class="row">
+                                <!-- Profile Info -->
+                                <div class="col-md-4">
+                                    <div class="dashboard-section">
+                                        <div class="section-content text-center">
+                                            <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: 600; margin: 0 auto 1.5rem;">
+                                                A
+                                            </div>
+                                            <h3>Admin LENSCAMDIO</h3>
+                                            <p style="color: #64748b;">Quản trị viên hệ thống</p>
+                                            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                                    <span>Ngày tham gia:</span>
+                                                    <strong>01/01/2024</strong>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                                    <span>Lần đăng nhập cuối:</span>
+                                                    <strong>Hôm nay</strong>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>Trạng thái:</span>
+                                                    <span class="status-badge approved">Hoạt động</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Profile Form -->
+                                <div class="col-md-8">
+                                    <div class="dashboard-section">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Thông tin cá nhân</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Họ và tên</label>
+                                                        <input type="text" class="form-control" value="Admin LENSCAMDIO" placeholder="Nhập họ và tên">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="email" class="form-control" value="admin@lenscamdio.com" placeholder="Nhập email">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Số điện thoại</label>
+                                                        <input type="tel" class="form-control" value="0123-456-789" placeholder="Nhập số điện thoại">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Chức vụ</label>
+                                                        <input type="text" class="form-control" value="Quản trị viên hệ thống" placeholder="Nhập chức vụ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <textarea class="form-control" rows="2" placeholder="Nhập địa chỉ">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Change Password -->
+                                    <div class="dashboard-section mt-4">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Đổi mật khẩu</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div class="form-group mb-3">
+                                                <label class="form-label">Mật khẩu hiện tại</label>
+                                                <input type="password" class="form-control" placeholder="Nhập mật khẩu hiện tại">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Mật khẩu mới</label>
+                                                        <input type="password" class="form-control" placeholder="Nhập mật khẩu mới">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Xác nhận mật khẩu mới</label>
+                                                        <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn-outline-primary">
+                                                <i class="fas fa-key"></i> Đổi mật khẩu
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Security Settings -->
+                                    <div class="dashboard-section mt-4">
+                                        <div class="section-header">
+                                            <h3 class="section-title" style="font-size: 1.1rem;">Cài đặt bảo mật</h3>
+                                        </div>
+                                        <div class="section-content">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <div>
+                                                    <strong>Xác thực 2 lớp (2FA)</strong><br>
+                                                    <small style="color: #64748b;">Tăng cường bảo mật cho tài khoản</small>
+                                                </div>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #e5e7eb; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                                                <div>
+                                                    <strong>Thông báo đăng nhập</strong><br>
+                                                    <small style="color: #64748b;">Nhận email khi có đăng nhập mới</small>
+                                                </div>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 8px;">
+                                                <div>
+                                                    <strong>Tự động đăng xuất</strong><br>
+                                                    <small style="color: #64748b;">Đăng xuất sau 30 phút không hoạt động</small>
+                                                </div>
+                                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                                    <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #3b82f6; border-radius: 24px; transition: 0.4s;"></span>
+                                                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s;"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+            </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.admin-sidebar').classList.toggle('collapsed');
+        }
+
+        // Section navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked nav item
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'studios': 'Quản lý Studio',
+                'equipment': 'Quản lý Thiết bị',
+                'bookings': 'Quản lý Đặt lịch',
+                'orders': 'Quản lý Đơn hàng',
+                'customers': 'Quản lý Khách hàng',
+                'analytics': 'Phân tích & Báo cáo',
+                'settings': 'Cài đặt',
+                'profile': 'Hồ sơ'
+            };
+            document.getElementById('page-title').textContent = titles[sectionId] || 'Dashboard';
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                localStorage.removeItem('userSession');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Check admin access
+        document.addEventListener('DOMContentLoaded', function() {
+            const userSession = localStorage.getItem('userSession');
+            if (!userSession) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const userData = JSON.parse(userSession);
+            if (userData.type !== 'owner') {
+                alert('Bạn không có quyền truy cập trang này!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update user info in header
+            document.querySelector('.user-info h4').textContent = userData.name;
+            document.querySelector('.user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+        });
+
+        // Mock function for add studio modal
+        function showAddStudioModal() {
+            alert('Chức năng thêm studio mới sẽ mở modal/form ở đây');
+        }
+    </script>
+</body>
+</html> 

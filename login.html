@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - LENSCAMDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="navbar-brand">
+                    <i class="fas fa-camera"></i> LENSCAMDIO
+                </a>
+                <div class="navbar-nav d-flex">
+                    <a href="index.html" class="nav-link">Trang chủ</a>
+                    <a href="studio-booking.html" class="nav-link">Đặt lịch Studio</a>
+                    <a href="camera-rental.html" class="nav-link">Thuê máy ảnh</a>
+                    <a href="products.html" class="nav-link">Sản phẩm</a>
+                    <a href="my-booking.html" class="nav-link">Lịch của tôi</a>
+                    <a href="contact.html" class="nav-link">Liên hệ</a>
+                    <a href="cart.html" class="nav-link cart-link">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng (<span id="cart-count">0</span>)
+                    </a>
+                    <a href="login.html" class="nav-link active login-btn">
+                        <i class="fas fa-user"></i> Đăng nhập
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="login-container">
+                        <div class="row">
+                            <!-- Left Side - Image -->
+                            <div class="col-md-6 login-image">
+                                <div class="login-image-content">
+                                    <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Studio Project">
+                                    <div class="login-image-overlay">
+                                        <h3>Chào mừng đến với LENSCAMDIO</h3>
+                                        <p>Trải nghiệm dịch vụ chụp ảnh chuyên nghiệp tốt nhất</p>
+                                        <div class="login-features">
+                                            <div class="feature-item">
+                                                <i class="fas fa-check"></i>
+                                                <span>Đặt lịch online dễ dàng</span>
+                                            </div>
+                                            <div class="feature-item">
+                                                <i class="fas fa-check"></i>
+                                                <span>Quản lý booking thuận tiện</span>
+                                            </div>
+                                            <div class="feature-item">
+                                                <i class="fas fa-check"></i>
+                                                <span>Tích điểm và ưu đãi độc quyền</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side - Login Form -->
+                            <div class="col-md-6 login-form-section">
+                                <div class="login-form-container">
+                                    <!-- User Type Selection -->
+                                    <div class="user-type-selection mb-4">
+                                        <div class="text-center mb-3">
+                                            <h3>Chọn loại tài khoản</h3>
+                                            <p style="color: #666; font-size: 0.9rem;">Vui lòng chọn loại tài khoản để đăng nhập</p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <button type="button" class="btn w-100 user-type-btn active" 
+                                                        data-type="customer" onclick="selectUserType('customer')" 
+                                                        style="border: 2px solid #3b82f6; color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 0.75rem; border-radius: 8px; font-weight: 600;">
+                                                    <i class="fas fa-user mb-2 d-block" style="font-size: 1.2rem;"></i>
+                                                    <small>Khách hàng</small>
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="button" class="btn w-100 user-type-btn" 
+                                                        data-type="owner" onclick="selectUserType('owner')"
+                                                        style="border: 2px solid #e2e8f0; color: #64748b; background: white; padding: 0.75rem; border-radius: 8px; font-weight: 600;">
+                                                    <i class="fas fa-store mb-2 d-block" style="font-size: 1.2rem;"></i>
+                                                    <small>Chủ studio</small>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Login Form -->
+                                    <div class="auth-form" id="loginForm">
+                                        <div class="auth-header">
+                                            <h2 id="loginTitle">Đăng nhập khách hàng</h2>
+                                            <p id="loginSubtitle">Đăng nhập để đặt lịch studio và thuê thiết bị</p>
+                                        </div>
+
+
+
+                                        <form id="loginFormElement">
+                                            <div class="form-group">
+                                                <label for="loginEmail" class="form-label">Email</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-envelope"></i>
+                                                    <input type="email" class="form-control" id="loginEmail" placeholder="Nhập email của bạn" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="loginPassword" class="form-label">Mật khẩu</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-lock"></i>
+                                                    <input type="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
+                                                    <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-options">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="rememberMe">
+                                                    <label for="rememberMe">Nhớ đăng nhập</label>
+                                                </div>
+                                                <a href="#" class="forgot-password" onclick="showForgotPassword()">Quên mật khẩu?</a>
+                                            </div>
+
+                                            <button type="submit" class="btn-primary auth-btn">
+                                                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                                            </button>
+                                        </form>
+
+                                        <div class="auth-divider">
+                                            <span>Hoặc</span>
+                                        </div>
+
+                                        <div class="social-login">
+                                            <button class="social-btn google-btn">
+                                                <i class="fab fa-google"></i> Đăng nhập với Google
+                                            </button>
+                                            <button class="social-btn facebook-btn">
+                                                <i class="fab fa-facebook-f"></i> Đăng nhập với Facebook
+                                            </button>
+                                        </div>
+
+                                        <div class="auth-footer">
+                                            <p>Chưa có tài khoản? <a href="#" onclick="showRegisterForm()">Đăng ký ngay</a></p>
+                                            <p style="font-size: 0.85rem; color: #666; text-align: center; margin-top: 1rem;">
+                                                💡 <strong>Demo:</strong> Mở <a href="#" onclick="openConsole()" style="color: #3b82f6;">Console (F12)</a> để xem tài khoản mẫu
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Register Form -->
+                                    <div class="auth-form" id="registerForm" style="display: none;">
+                                        <div class="auth-header">
+                                            <h2>Đăng ký</h2>
+                                            <p>Tạo tài khoản mới</p>
+                                        </div>
+
+                                        <form id="registerFormElement">
+                                            <div class="form-group">
+                                                <label for="registerName" class="form-label">Họ và tên</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-user"></i>
+                                                    <input type="text" class="form-control" id="registerName" placeholder="Nhập họ và tên" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="registerEmail" class="form-label">Email</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-envelope"></i>
+                                                    <input type="email" class="form-control" id="registerEmail" placeholder="Nhập email của bạn" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="registerPhone" class="form-label">Số điện thoại</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-phone"></i>
+                                                    <input type="tel" class="form-control" id="registerPhone" placeholder="Nhập số điện thoại" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="registerPassword" class="form-label">Mật khẩu</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-lock"></i>
+                                                    <input type="password" class="form-control" id="registerPassword" placeholder="Nhập mật khẩu" required>
+                                                    <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-lock"></i>
+                                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                                                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-options">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="agreeTerms" required>
+                                                    <label for="agreeTerms">Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a></label>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="btn-primary auth-btn">
+                                                <i class="fas fa-user-plus"></i> Đăng ký
+                                            </button>
+                                        </form>
+
+                                        <div class="auth-footer">
+                                            <p>Đã có tài khoản? <a href="#" onclick="showLoginForm()">Đăng nhập ngay</a></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Forgot Password Form -->
+                                    <div class="auth-form" id="forgotPasswordForm" style="display: none;">
+                                        <div class="auth-header">
+                                            <h2>Quên mật khẩu</h2>
+                                            <p>Nhập email để khôi phục mật khẩu</p>
+                                        </div>
+
+                                        <form id="forgotPasswordFormElement">
+                                            <div class="form-group">
+                                                <label for="forgotEmail" class="form-label">Email</label>
+                                                <div class="input-group">
+                                                    <i class="fas fa-envelope"></i>
+                                                    <input type="email" class="form-control" id="forgotEmail" placeholder="Nhập email của bạn" required>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="btn-primary auth-btn">
+                                                <i class="fas fa-paper-plane"></i> Gửi email khôi phục
+                                            </button>
+                                        </form>
+
+                                        <div class="auth-footer">
+                                            <p>Nhớ lại mật khẩu? <a href="#" onclick="showLoginForm()">Đăng nhập ngay</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                                                        <h5>LENSCAMDIO</h5>
+                    <p>Không gian chụp ảnh chuyên nghiệp và dịch vụ cho thuê thiết bị hàng đầu tại Việt Nam.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Dịch vụ</h5>
+                    <ul class="footer-links">
+                        <li><a href="studio-booking.html">Thuê Studio</a></li>
+                        <li><a href="camera-rental.html">Thuê máy ảnh</a></li>
+                        <li><a href="#">Chụp ảnh sự kiện</a></li>
+                        <li><a href="#">Quay video</a></li>
+                        <li><a href="#">Tư vấn concept</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Hỗ trợ</h5>
+                    <ul class="footer-links">
+                        <li><a href="contact.html">Liên hệ</a></li>
+                        <li><a href="#">Hướng dẫn đặt lịch</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Chính sách</a></li>
+                        <li><a href="#">Điều khoản</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Liên hệ</h5>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
+                        <p><i class="fas fa-phone"></i> 0123-456-789</p>
+                        <p><i class="fas fa-envelope"></i> info@lenscamdio.com</p>
+                        <p><i class="fas fa-clock"></i> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2024 LENSCAMDIO. Tất cả quyền được bảo lưu.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">Thiết kế bởi LENSCAMDIO Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+    <button class="floating-cart-btn" onclick="window.location.href='cart.html'">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge hidden" id="floating-cart-badge">0</span>
+    </button>
+
+    <!-- Simple Chat Box -->
+    <div id="chatbox-root">
+      <div id="chatbox-container">
+        <div id="chatbox-header">Trợ lý AI LENSCAMDIO</div>
+        <div id="chatbox-messages"></div>
+        <div id="chatbox-input-row">
+          <input id="chatbox-input" type="text" placeholder="Nhập câu hỏi...">
+          <button id="chatbox-send">Gửi</button>
+        </div>
+      </div>
+      <button id="chatbox-toggle" title="Chat với LENSCAMDIO">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 19V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7l-3 4z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // User type selection
+        function selectUserType(type) {
+            const buttons = document.querySelectorAll('.user-type-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.border = '2px solid #e2e8f0';
+                btn.style.color = '#64748b';
+                btn.style.background = 'white';
+            });
+            
+            const selectedBtn = document.querySelector(`[data-type="${type}"]`);
+            selectedBtn.classList.add('active');
+            selectedBtn.style.border = '2px solid #3b82f6';
+            selectedBtn.style.color = '#3b82f6';
+            selectedBtn.style.background = 'rgba(59, 130, 246, 0.1)';
+            
+            const loginTitle = document.getElementById('loginTitle');
+            const loginSubtitle = document.getElementById('loginSubtitle');
+            
+            if (type === 'customer') {
+                loginTitle.textContent = 'Đăng nhập khách hàng';
+                loginSubtitle.textContent = 'Đăng nhập để đặt lịch studio và thuê thiết bị';
+                // Log customer accounts info to console
+                console.log('=== TÀI KHOẢN KHÁCH HÀNG MẪU ===');
+                console.log('Khách hàng 1: khach1@lenscamdio.com / 123456');
+                console.log('Khách hàng 2: khach2@lenscamdio.com / 123456');
+            } else {
+                loginTitle.textContent = 'Đăng nhập chủ studio';
+                loginSubtitle.textContent = 'Đăng nhập để quản lý studio và thiết bị';
+                // Log admin account info to console
+                console.log('=== TÀI KHOẢN ADMIN MẪU ===');
+                console.log('Admin: admin@lenscamdio.com / admin123');
+            }
+        }
+
+        // Enhanced login handler with sample accounts
+        function handleLoginWithSample(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const userType = document.querySelector('.user-type-btn.active').dataset.type;
+            
+            if (!email || !password) {
+                showNotification('Vui lòng điền đầy đủ thông tin', 'error');
+                return;
+            }
+            
+            // Check sample accounts
+            const sampleAccounts = {
+                'khach1@lenscamdio.com': { password: '123456', type: 'customer', name: 'Nguyễn Văn A' },
+                'khach2@lenscamdio.com': { password: '123456', type: 'customer', name: 'Trần Thị B' },
+                'admin@lenscamdio.com': { password: 'admin123', type: 'owner', name: 'Admin LENSCAMDIO' }
+            };
+            
+            const account = sampleAccounts[email.toLowerCase()];
+            
+            if (account && account.password === password && account.type === userType) {
+                showNotification('Đang đăng nhập...', 'info');
+                
+                setTimeout(() => {
+                    const userData = {
+                        email: email,
+                        name: account.name,
+                        type: account.type,
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('userSession', JSON.stringify(userData));
+                    showNotification(`Chào mừng ${account.name}!`, 'success');
+                    
+                    // Redirect based on user type
+                    setTimeout(() => {
+                        if (account.type === 'owner') {
+                            window.location.href = 'admin-dashboard.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 1500);
+                }, 1000);
+            } else {
+                showNotification('Email hoặc mật khẩu không đúng hoặc loại tài khoản không phù hợp', 'error');
+            }
+        }
+
+        // Function to show console info
+        function openConsole() {
+            alert('Nhấn F12 để mở Developer Console và xem thông tin tài khoản mẫu!');
+        }
+
+        // Show sample accounts info
+        function showSampleAccounts() {
+            console.log('%c🔐 THÔNG TIN TÀI KHOẢN MẪU - LENSCAMDIO', 'background: #3b82f6; color: white; padding: 10px; font-size: 16px; font-weight: bold;');
+            console.log('%c📋 KHÁCH HÀNG:', 'color: #059669; font-size: 14px; font-weight: bold;');
+            console.log('👤 Khách hàng 1: khach1@lenscamdio.com | Mật khẩu: 123456');
+            console.log('👤 Khách hàng 2: khach2@lenscamdio.com | Mật khẩu: 123456');
+            console.log('%c🛠️ QUẢN TRỊ VIÊN:', 'color: #dc2626; font-size: 14px; font-weight: bold;');
+            console.log('👨‍💼 Admin: admin@lenscamdio.com | Mật khẩu: admin123');
+            console.log('%c💡 Hướng dẫn: Chọn loại tài khoản phù hợp và đăng nhập với thông tin trên', 'color: #7c3aed; font-style: italic;');
+        }
+
+        // Override the existing login handler when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show sample accounts info immediately
+            showSampleAccounts();
+            
+            const loginForm = document.getElementById('loginFormElement');
+            if (loginForm) {
+                // Remove existing event listeners
+                loginForm.replaceWith(loginForm.cloneNode(true));
+                // Add new event listener
+                document.getElementById('loginFormElement').addEventListener('submit', handleLoginWithSample);
+            }
+        });
+    </script>
+</body>
+</html> 

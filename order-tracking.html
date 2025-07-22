@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo dõi đơn hàng - LENSCAMDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        .order-tracking-section {
+            min-height: 100vh;
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .tracking-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tracking-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .tracking-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .tracking-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .orders-section {
+            padding: 2rem;
+        }
+
+        .order-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-info h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+        }
+
+        .order-info p {
+            margin: 0.25rem 0 0 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.confirmed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.processing {
+            background: #e0e7ff;
+            color: #5b21b6;
+        }
+
+        .status-badge.shipping {
+            background: #fed7e2;
+            color: #97266d;
+        }
+
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .order-body {
+            padding: 1.5rem;
+        }
+
+        .order-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e2e8f0;
+        }
+
+        .timeline-item.completed::before {
+            background: var(--success-color);
+        }
+
+        .timeline-item.current::before {
+            background: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1.25rem;
+            width: 2px;
+            height: calc(100% - 1rem);
+            background: #e2e8f0;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-item.completed::after {
+            background: var(--success-color);
+        }
+
+        .timeline-content h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .timeline-content p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .timeline-content .timestamp {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .order-items {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .order-items h4 {
+            margin: 0 0 1rem 0;
+            color: var(--text-dark);
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0 0 0.25rem 0;
+        }
+
+        .item-category {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .item-quantity {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .item-price {
+            color: var(--text-dark);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .order-summary {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: between;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .action-btn.outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn.danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .action-btn.danger:hover {
+            background: #dc2626;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-orders i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        .empty-orders h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .empty-orders p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .quick-search {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .quick-search-btn {
+            padding: 0.5rem 1rem;
+            background: #f1f5f9;
+            color: var(--primary-color);
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-search-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .order-tracking-section {
+                padding: 100px 0 40px;
+            }
+
+            .tracking-header {
+                padding: 1.5rem;
+            }
+
+            .tracking-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-section {
+                padding: 1.5rem;
+            }
+
+            .search-input-group {
+                flex-direction: column;
+            }
+
+            .orders-section {
+                padding: 1.5rem;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .item-price {
+                text-align: center;
+            }
+
+            .order-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="navbar-brand">
+                    <i class="fas fa-camera"></i> LENSCAMDIO
+                </a>
+                <div class="navbar-nav d-flex">
+                    <a href="index.html" class="nav-link">Trang chủ</a>
+                    <a href="studio-booking.html" class="nav-link">Đặt lịch Studio</a>
+                    <a href="camera-rental.html" class="nav-link">Thuê máy ảnh</a>
+                    <a href="products.html" class="nav-link">Sản phẩm</a>
+                    <a href="my-booking.html" class="nav-link">Lịch của tôi</a>
+                    <a href="contact.html" class="nav-link">Liên hệ</a>
+                    <a href="cart.html" class="nav-link cart-link">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng (<span id="cart-count">0</span>)
+                    </a>
+                    <a href="login.html" class="nav-link login-btn">
+                        <i class="fas fa-user"></i> Đăng nhập
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Order Tracking Section -->
+    <section class="order-tracking-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="tracking-container">
+                        <!-- Header -->
+                        <div class="tracking-header">
+                            <h1><i class="fas fa-truck"></i> Theo dõi đơn hàng</h1>
+                            <p>Kiểm tra tình trạng và tiến độ đơn hàng của bạn</p>
+                        </div>
+
+                        <!-- Search Section -->
+                        <div class="search-section">
+                            <div class="search-box">
+                                <div class="search-input-group">
+                                    <input type="text" class="search-input" id="order-search" 
+                                           placeholder="Nhập mã đơn hàng (VD: LC123456)">
+                                    <button class="search-btn" onclick="searchOrder()">
+                                        <i class="fas fa-search"></i> Tìm kiếm
+                                    </button>
+                                </div>
+                                <div class="quick-search">
+                                    <span style="color: var(--text-light); font-size: 0.9rem; margin-right: 1rem;">Tìm nhanh:</span>
+                                    <button class="quick-search-btn" onclick="filterOrders('all')">Tất cả</button>
+                                    <button class="quick-search-btn" onclick="filterOrders('pending')">Chờ duyệt</button>
+                                    <button class="quick-search-btn" onclick="filterOrders('confirmed')">Đã duyệt</button>
+                                    <button class="quick-search-btn" onclick="filterOrders('completed')">Hoàn thành</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Orders Section -->
+                        <div class="orders-section">
+                            <div id="orders-container">
+                                <!-- Orders will be loaded here -->
+                            </div>
+            </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chat Box -->
+    <div id="chatbox-root">
+        <div id="chatbox-container">
+            <div id="chatbox-header">Trợ lý AI LENSCAMDIO</div>
+            <div id="chatbox-messages"></div>
+            <div id="chatbox-input-row">
+                <input id="chatbox-input" type="text" placeholder="Nhập câu hỏi...">
+                <button id="chatbox-send">Gửi</button>
+            </div>
+        </div>
+        <button id="chatbox-toggle" title="Chat với LENSCAMDIO">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7l-3 4z" fill="currentColor"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>LENSCAMDIO</h5>
+                    <p>Không gian chụp ảnh chuyên nghiệp và dịch vụ cho thuê thiết bị hàng đầu tại Việt Nam.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Dịch vụ</h5>
+                    <ul class="footer-links">
+                        <li><a href="studio-booking.html">Thuê Studio</a></li>
+                        <li><a href="camera-rental.html">Thuê máy ảnh</a></li>
+                        <li><a href="#">Chụp ảnh sự kiện</a></li>
+                        <li><a href="#">Quay video</a></li>
+                        <li><a href="#">Tư vấn concept</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Hỗ trợ</h5>
+                    <ul class="footer-links">
+                        <li><a href="contact.html">Liên hệ</a></li>
+                        <li><a href="#">Hướng dẫn đặt lịch</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Chính sách</a></li>
+                        <li><a href="#">Điều khoản</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Liên hệ</h5>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
+                        <p><i class="fas fa-phone"></i> 0123-456-789</p>
+                        <p><i class="fas fa-envelope"></i> info@lenscamdio.com</p>
+                        <p><i class="fas fa-clock"></i> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2024 LENSCAMDIO. Tất cả quyền được bảo lưu.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">Thiết kế bởi LENSCAMDIO Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Sample orders data (in real app, this would come from API)
+        const sampleOrders = [
+            {
+                code: 'LC001234',
+                status: 'completed',
+                createdAt: '2024-12-20T10:30:00Z',
+                customer: {
+                    name: 'Nguyễn Văn A',
+                    phone: '0123456789',
+                    email: 'nguyenvana@email.com'
+                },
+                items: [
+                    {
+                        name: 'Canon EOS R5',
+                        category: 'Camera',
+                        quantity: 1,
+                        price: 800000,
+                        image: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=100'
+                    },
+                    {
+                        name: 'Ống kính 85mm f/1.4',
+                        category: 'Lens',
+                        quantity: 1,
+                        price: 300000,
+                        image: 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?w=100'
+                    }
+                ],
+                total: '1.150.000đ',
+                timeline: [
+                    { stage: 'Đặt hàng', status: 'completed', timestamp: '20/12/2024 10:30', description: 'Đơn hàng đã được tạo thành công' },
+                    { stage: 'Xác nhận', status: 'completed', timestamp: '20/12/2024 11:00', description: 'Đơn hàng đã được xác nhận' },
+                    { stage: 'Chuẩn bị', status: 'completed', timestamp: '20/12/2024 14:30', description: 'Thiết bị đang được chuẩn bị' },
+                    { stage: 'Giao hàng', status: 'completed', timestamp: '21/12/2024 09:00', description: 'Thiết bị đã được giao thành công' },
+                    { stage: 'Hoàn thành', status: 'completed', timestamp: '23/12/2024 18:00', description: 'Đơn hàng hoàn thành' }
+                ]
+            },
+            {
+                code: 'LC001235',
+                status: 'shipping',
+                createdAt: '2024-12-22T14:15:00Z',
+                customer: {
+                    name: 'Trần Thị B',
+                    phone: '0987654321',
+                    email: 'tranthib@email.com'
+                },
+                items: [
+                    {
+                        name: 'Sony A7R IV',
+                        category: 'Camera',
+                        quantity: 1,
+                        price: 900000,
+                        image: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=100'
+                    }
+                ],
+                total: '950.000đ',
+                timeline: [
+                    { stage: 'Đặt hàng', status: 'completed', timestamp: '22/12/2024 14:15', description: 'Đơn hàng đã được tạo thành công' },
+                    { stage: 'Xác nhận', status: 'completed', timestamp: '22/12/2024 15:00', description: 'Đơn hàng đã được xác nhận' },
+                    { stage: 'Chuẩn bị', status: 'completed', timestamp: '23/12/2024 09:00', description: 'Thiết bị đang được chuẩn bị' },
+                    { stage: 'Giao hàng', status: 'current', timestamp: '23/12/2024 14:00', description: 'Thiết bị đang được giao đến bạn' },
+                    { stage: 'Hoàn thành', status: 'pending', timestamp: '', description: 'Chờ hoàn thành' }
+                ]
+            },
+            {
+                code: 'LC001236',
+                status: 'pending',
+                createdAt: '2024-12-23T09:45:00Z',
+                customer: {
+                    name: 'Lê Văn C',
+                    phone: '0369258147',
+                    email: 'levanc@email.com'
+                },
+                items: [
+                    {
+                        name: 'Nikon Z9',
+                        category: 'Camera',
+                        quantity: 1,
+                        price: 1000000,
+                        image: 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?w=100'
+                    }
+                ],
+                total: '1.050.000đ',
+                timeline: [
+                    { stage: 'Đặt hàng', status: 'current', timestamp: '23/12/2024 09:45', description: 'Đơn hàng đã được tạo, đang chờ xác nhận' },
+                    { stage: 'Xác nhận', status: 'pending', timestamp: '', description: 'Chờ xác nhận' },
+                    { stage: 'Chuẩn bị', status: 'pending', timestamp: '', description: 'Chờ chuẩn bị' },
+                    { stage: 'Giao hàng', status: 'pending', timestamp: '', description: 'Chờ giao hàng' },
+                    { stage: 'Hoàn thành', status: 'pending', timestamp: '', description: 'Chờ hoàn thành' }
+                ]
+            }
+        ];
+
+        // Load orders from localStorage and merge with sample data
+        function getOrders() {
+            const localOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            // Add sample timeline and details to local orders
+            const enhancedLocalOrders = localOrders.map(order => ({
+                ...order,
+                timeline: [
+                    { stage: 'Đặt hàng', status: 'completed', timestamp: formatDateTime(order.createdAt), description: 'Đơn hàng đã được tạo thành công' },
+                    { stage: 'Xác nhận', status: order.status === 'pending' ? 'current' : 'completed', timestamp: order.status === 'pending' ? '' : formatDateTime(order.createdAt, 30), description: order.status === 'pending' ? 'Đang chờ xác nhận' : 'Đơn hàng đã được xác nhận' },
+                    { stage: 'Chuẩn bị', status: order.status === 'pending' ? 'pending' : 'completed', timestamp: order.status === 'pending' ? '' : formatDateTime(order.createdAt, 120), description: order.status === 'pending' ? 'Chờ chuẩn bị' : 'Thiết bị đã được chuẩn bị' },
+                    { stage: 'Giao hàng', status: 'pending', timestamp: '', description: 'Chờ giao hàng' },
+                    { stage: 'Hoàn thành', status: 'pending', timestamp: '', description: 'Chờ hoàn thành' }
+                ]
+            }));
+
+            return [...enhancedLocalOrders, ...sampleOrders];
+        }
+
+        function formatDateTime(dateString, addMinutes = 0) {
+            const date = new Date(dateString);
+            date.setMinutes(date.getMinutes() + addMinutes);
+            return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Load and display orders
+        function loadOrders(filter = 'all') {
+            const orders = getOrders();
+            const container = document.getElementById('orders-container');
+            
+            let filteredOrders = orders;
+            if (filter !== 'all') {
+                filteredOrders = orders.filter(order => order.status === filter);
+            }
+
+            if (filteredOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Không tìm thấy đơn hàng</h3>
+                        <p>Bạn chưa có đơn hàng nào hoặc không có đơn hàng phù hợp với bộ lọc.</p>
+                        <a href="camera-rental.html" class="action-btn primary">
+                            <i class="fas fa-shopping-bag"></i> Bắt đầu mua sắm
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const ordersHTML = filteredOrders.map(order => createOrderCard(order)).join('');
+            container.innerHTML = ordersHTML;
+        }
+
+        function createOrderCard(order) {
+            const statusInfo = getStatusInfo(order.status);
+            const subtotal = order.items ? order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) : 0;
+            const serviceFee = 50000;
+            
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>Đơn hàng #${order.code}</h3>
+                            <p>Đặt lúc: ${formatDateTime(order.createdAt)}</p>
+                            <p>Khách hàng: ${order.customer.name}</p>
+                        </div>
+                        <div class="order-status">
+                            <div class="status-badge ${order.status}">
+                                <i class="${statusInfo.icon}"></i>
+                                ${statusInfo.text}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-body">
+                        <!-- Timeline -->
+                        <h4 style="margin-bottom: 1.5rem;">Tiến độ đơn hàng</h4>
+                        <div class="order-timeline">
+                            ${order.timeline.map(item => `
+                                <div class="timeline-item ${item.status}">
+                                    <div class="timeline-content">
+                                        <h4>${item.stage}</h4>
+                                        <p>${item.description}</p>
+                                        ${item.timestamp ? `<div class="timestamp">${item.timestamp}</div>` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Order Items -->
+                        <div class="order-items">
+                            <h4>Sản phẩm đã đặt</h4>
+                            <div class="item-list">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <div class="item-image">
+                                            <img src="${item.image}" alt="${item.name}">
+                                        </div>
+                                        <div class="item-details">
+                                            <div class="item-name">${item.name}</div>
+                                            <div class="item-category">${item.category}</div>
+                                        </div>
+                                        <div class="item-quantity">x${item.quantity}</div>
+                                        <div class="item-price">${formatCurrency(item.price * item.quantity)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Tạm tính:</span>
+                                <span>${formatCurrency(subtotal)}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Phí dịch vụ:</span>
+                                <span>${formatCurrency(serviceFee)}</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Tổng cộng:</span>
+                                <span>${order.total}</span>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="order-actions">
+                            ${getOrderActions(order)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStatusInfo(status) {
+            const statusMap = {
+                'pending': { text: 'Chờ duyệt', icon: 'fas fa-clock' },
+                'confirmed': { text: 'Đã duyệt', icon: 'fas fa-check' },
+                'processing': { text: 'Đang xử lý', icon: 'fas fa-cog fa-spin' },
+                'shipping': { text: 'Đang giao', icon: 'fas fa-truck' },
+                'completed': { text: 'Hoàn thành', icon: 'fas fa-check-circle' },
+                'cancelled': { text: 'Đã hủy', icon: 'fas fa-times-circle' }
+            };
+            return statusMap[status] || { text: 'Không xác định', icon: 'fas fa-question' };
+        }
+
+        function getOrderActions(order) {
+            let actions = `
+                <button class="action-btn outline" onclick="printOrder('${order.code}')">
+                    <i class="fas fa-print"></i> In đơn hàng
+                </button>
+                <a href="contact.html" class="action-btn outline">
+                    <i class="fas fa-headset"></i> Hỗ trợ
+                </a>
+            `;
+
+            if (order.status === 'pending') {
+                actions += `
+                    <button class="action-btn danger" onclick="cancelOrder('${order.code}')">
+                        <i class="fas fa-times"></i> Hủy đơn
+                    </button>
+                `;
+            }
+
+            if (order.status === 'completed') {
+                actions += `
+                    <button class="action-btn primary" onclick="reorder('${order.code}')">
+                        <i class="fas fa-redo"></i> Đặt lại
+                    </button>
+                `;
+            }
+
+            return actions;
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Search functionality
+        function searchOrder() {
+            const searchTerm = document.getElementById('order-search').value.trim().toUpperCase();
+            if (!searchTerm) {
+                loadOrders();
+                return;
+            }
+
+            const orders = getOrders();
+            const filtered = orders.filter(order => 
+                order.code.toUpperCase().includes(searchTerm) ||
+                order.customer.name.toUpperCase().includes(searchTerm) ||
+                order.customer.phone.includes(searchTerm)
+            );
+
+            const container = document.getElementById('orders-container');
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-search"></i>
+                        <h3>Không tìm thấy kết quả</h3>
+                        <p>Không có đơn hàng nào phù hợp với từ khóa "${searchTerm}"</p>
+                        <button class="action-btn primary" onclick="clearSearch()">
+                            <i class="fas fa-times"></i> Xóa tìm kiếm
+                        </button>
+                    </div>
+                `;
+            } else {
+                const ordersHTML = filtered.map(order => createOrderCard(order)).join('');
+                container.innerHTML = ordersHTML;
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('order-search').value = '';
+            loadOrders();
+        }
+
+        function filterOrders(status) {
+            // Update active button
+            document.querySelectorAll('.quick-search-btn').forEach(btn => {
+                btn.style.background = '#f1f5f9';
+                btn.style.color = 'var(--primary-color)';
+            });
+            event.target.style.background = 'var(--primary-color)';
+            event.target.style.color = 'white';
+            
+            loadOrders(status);
+        }
+
+        // Order actions
+        function cancelOrder(orderCode) {
+            if (confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                // Update order status in localStorage
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const orderIndex = orders.findIndex(order => order.code === orderCode);
+                if (orderIndex !== -1) {
+                    orders[orderIndex].status = 'cancelled';
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                }
+                
+                showNotification('Đơn hàng đã được hủy thành công', 'success');
+                loadOrders();
+            }
+        }
+
+        function printOrder(orderCode) {
+            showNotification('Chức năng in đơn hàng sẽ được cung cấp sớm', 'info');
+        }
+
+        function reorder(orderCode) {
+            showNotification('Đang thêm sản phẩm vào giỏ hàng...', 'info');
+            // Simulate adding items to cart
+            setTimeout(() => {
+                showNotification('Đã thêm sản phẩm vào giỏ hàng!', 'success');
+            }, 1000);
+        }
+
+        // Enter key search
+        document.getElementById('order-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchOrder();
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+            updateCartBadge();
+            
+            // Check if there's a specific order to highlight (from URL params)
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderCode = urlParams.get('order');
+            if (orderCode) {
+                document.getElementById('order-search').value = orderCode;
+                searchOrder();
+            }
+        });
+    </script>
+</body>
+</html> 

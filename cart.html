@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - LENSCAMDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="navbar-brand">
+                    <i class="fas fa-camera"></i> LENSCAMDIO
+                </a>
+                <div class="navbar-nav d-flex">
+                    <a href="index.html" class="nav-link">Trang chủ</a>
+                    <a href="studio-booking.html" class="nav-link">Đặt lịch Studio</a>
+                    <a href="camera-rental.html" class="nav-link">Thuê máy ảnh</a>
+                    <a href="products.html" class="nav-link">Sản phẩm</a>
+                    <a href="my-booking.html" class="nav-link">Lịch của tôi</a>
+                    <a href="contact.html" class="nav-link">Liên hệ</a>
+                    <a href="order-tracking.html" class="nav-link order-tracking-btn">
+                        <i class="fas fa-truck"></i> Theo dõi đơn hàng
+                    </a>
+                    <a href="cart.html" class="nav-link cart-link active">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng (<span id="cart-count">0</span>)
+                    </a>
+                    <a href="login.html" class="nav-link login-btn">
+                        <i class="fas fa-user"></i> Đăng nhập
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Section -->
+    <section class="section" style="margin-top: 80px;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h1>Giỏ hàng của bạn</h1>
+                <p>Xem lại và thanh toán các sản phẩm đã chọn</p>
+                <div class="cart-actions mt-4">
+                    <a href="order-tracking.html" class="btn-outline-primary me-3">
+                        <i class="fas fa-truck"></i> Theo dõi đơn hàng
+                    </a>
+                    <a href="camera-rental.html" class="btn-outline-primary">
+                        <i class="fas fa-shopping-bag"></i> Tiếp tục mua sắm
+                    </a>
+                </div>
+            </div>
+
+            <div id="cart-content">
+                <!-- Cart Items will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thanh toán đơn hàng</h5>
+                    <button type="button" class="btn-close" onclick="closePaymentModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Payment Methods -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Chọn phương thức thanh toán</h6>
+                            <div class="payment-methods">
+                                <div class="payment-method active" data-method="qr">
+                                    <i class="fas fa-qrcode"></i>
+                                    <span>Quét mã QR</span>
+                                </div>
+                                <div class="payment-method" data-method="card">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Thẻ tín dụng</span>
+                                </div>
+                                <div class="payment-method" data-method="bank">
+                                    <i class="fas fa-university"></i>
+                                    <span>Chuyển khoản</span>
+                                </div>
+                                </div>
+                                
+                            <!-- QR Code Payment -->
+                            <div id="qr-payment" class="payment-content active">
+                                <div class="text-center">
+                                    <h6>Quét mã QR để thanh toán</h6>
+                                    <div class="qr-code-container">
+                                        <div id="qr-code">
+                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=LENSCAMDIO-ORDER-" alt="QR Code" style="width: 200px; height: 200px; border: 2px solid #ddd; border-radius: 8px;">
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 text-muted">
+                                        Mở ứng dụng ngân hàng và quét mã QR để thanh toán
+                                    </p>
+                                    <div class="bank-info mt-3">
+                                        <h6>Thông tin chuyển khoản</h6>
+                                        <p><strong>Ngân hàng:</strong> Vietcombank<br>
+                                        <strong>Số tài khoản:</strong> 1234567890<br>
+                                        <strong>Chủ tài khoản:</strong> LENSCAMDIO JSC<br>
+                                        <strong>Nội dung:</strong> <span id="transfer-content">LENSCAMDIO ORDER</span></p>
+                                    </div>      
+                                </div>
+                            </div>
+
+                            <!-- Card Payment -->
+                            <div id="card-payment" class="payment-content">
+                                <!-- Sample Card Info -->
+                                <div class="sample-card-info mb-3" style="background: #e0f2fe; border: 1px solid #0284c7; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #0369a1;">
+                                        <i class="fas fa-credit-card" style="margin-right: 0.5rem;"></i>
+                                        <strong>Thẻ demo:</strong>
+                                    </div>
+                                    <div style="font-family: monospace; line-height: 1.3;">
+                                        <div style="margin-bottom: 0.25rem;"><strong>Số thẻ:</strong> 4111 1111 1111 1111</div>
+                                        <div style="display: flex; gap: 1rem;">
+                                            <span><strong>Hạn:</strong> 12/25</span>
+                                            <span><strong>CVV:</strong> 123</span>
+                                            <span><strong>Tên:</strong> NGUYEN VAN A</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <form id="card-form">
+                                    <div class="form-group mb-3">
+                                        <label>Số thẻ</label>
+                                        <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group mb-3">
+                                                <label>Tháng/Năm</label>
+                                                <input type="text" class="form-control" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group mb-3">
+                                                <label>CVV</label>
+                                                <input type="text" class="form-control" id="card-cvv" placeholder="123" maxlength="3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Tên trên thẻ</label>
+                                        <input type="text" class="form-control" id="card-name" placeholder="NGUYEN VAN A">
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Bank Transfer -->
+                            <div id="bank-payment" class="payment-content">
+                                <div class="bank-info">
+                                    <h6>Thông tin chuyển khoản</h6>
+                                    <div class="bank-details">
+                                        <p><strong>Ngân hàng:</strong> Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)</p>
+                                        <p><strong>Số tài khoản:</strong> 1234567890</p>
+                                        <p><strong>Chủ tài khoản:</strong> CÔNG TY TNHH LENSCAMDIO</p>
+                                        <p><strong>Chi nhánh:</strong> Hồ Chí Minh</p>
+                                        <p><strong>Nội dung chuyển khoản:</strong> <span id="bank-transfer-content">LENSCAMDIO ORDER</span></p>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        Vui lòng chuyển khoản đúng số tiền và ghi đúng nội dung để đơn hàng được xử lý tự động.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Thông tin đơn hàng</h6>
+                            <div class="order-summary">
+                                <div id="checkout-items"></div>
+                                <div class="order-total">
+                                    <div class="total-row">
+                                        <span>Tạm tính:</span>
+                                        <span id="subtotal">0đ</span>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>Phí dịch vụ:</span>
+                                        <span id="service-fee">50.000đ</span>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>Giảm giá:</span>
+                                        <span id="discount">-0đ</span>
+                        </div>
+                                    <div class="total-row final">
+                                        <strong>Tổng cộng:</strong>
+                                        <strong id="final-total">0đ</strong>
+                        </div>
+                                </div>
+                            </div>
+
+                            <!-- Customer Info -->
+                            <div class="customer-info mt-4">
+                                <h6 class="mb-3">Thông tin khách hàng</h6>
+                                <form id="customer-form">
+                                    <div class="form-group mb-3">
+                                        <label>Họ và tên *</label>
+                                        <input type="text" class="form-control" id="customer-name" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Số điện thoại *</label>
+                                        <input type="tel" class="form-control" id="customer-phone" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Email</label>
+                                        <input type="email" class="form-control" id="customer-email">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Ghi chú</label>
+                                        <textarea class="form-control" id="customer-note" rows="3" placeholder="Ghi chú đặc biệt..."></textarea>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-primary" onclick="closePaymentModal()">Đóng</button>
+                    <button type="button" class="btn-primary" onclick="processPayment()">
+                        <i class="fas fa-credit-card"></i> Thanh toán
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-check-circle" style="font-size: 4rem; color: #10b981;"></i>
+                    </div>
+                    <h3 class="mb-3">Thanh toán thành công!</h3>
+                    <p class="mb-4">Đơn hàng của bạn đã được xác nhận. Mã đơn hàng: <strong id="order-code"></strong></p>
+                    <div class="action-buttons">
+                        <button class="btn-outline-primary me-3" onclick="closeSuccessModal()">Đóng</button>
+                        <button class="btn-primary" onclick="goToOrderTracking()">
+                            <i class="fas fa-truck"></i> Theo dõi đơn hàng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+                </div>
+
+    <!-- Chat Box -->
+    <div id="chatbox-root">
+        <div id="chatbox-container">
+            <div id="chatbox-header">Trợ lý AI LENSCAMDIO</div>
+            <div id="chatbox-messages"></div>
+            <div id="chatbox-input-row">
+                <input id="chatbox-input" type="text" placeholder="Nhập câu hỏi...">
+                <button id="chatbox-send">Gửi</button>
+            </div>
+        </div>
+        <button id="chatbox-toggle" title="Chat với LENSCAMDIO">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7l-3 4z" fill="currentColor"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>LENSCAMDIO</h5>
+                    <p>Không gian chụp ảnh chuyên nghiệp và dịch vụ cho thuê thiết bị hàng đầu tại Việt Nam.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Dịch vụ</h5>
+                    <ul class="footer-links">
+                        <li><a href="studio-booking.html">Thuê Studio</a></li>
+                        <li><a href="camera-rental.html">Thuê máy ảnh</a></li>
+                        <li><a href="#">Chụp ảnh sự kiện</a></li>
+                        <li><a href="#">Quay video</a></li>
+                        <li><a href="#">Tư vấn concept</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Hỗ trợ</h5>
+                    <ul class="footer-links">
+                        <li><a href="contact.html">Liên hệ</a></li>
+                        <li><a href="#">Hướng dẫn đặt lịch</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Chính sách</a></li>
+                        <li><a href="#">Điều khoản</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>Liên hệ</h5>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
+                        <p><i class="fas fa-phone"></i> 0123-456-789</p>
+                        <p><i class="fas fa-envelope"></i> info@lenscamdio.com</p>
+                        <p><i class="fas fa-clock"></i> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2024 LENSCAMDIO. Tất cả quyền được bảo lưu.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">Thiết kế bởi LENSCAMDIO Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+    <button class="floating-cart-btn" onclick="window.location.href='cart.html'">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge hidden" id="floating-cart-badge">0</span>
+    </button>
+
+    <script src="script.js"></script>
+    <script>
+        // Load cart items on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartItems();
+            updateCartBadge();
+        });
+
+        function loadCartItems() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartContent = document.getElementById('cart-content');
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart text-center">
+                        <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 2rem;"></i>
+                        <h3>Giỏ hàng trống</h3>
+                        <p>Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+                        <a href="camera-rental.html" class="btn-primary">
+                            <i class="fas fa-shopping-bag"></i> Tiếp tục mua sắm
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let cartHTML = `
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="cart-items-container">
+                            <h3 class="mb-4">Sản phẩm trong giỏ hàng (${cart.length})</h3>
+            `;
+            
+            cart.forEach((item, index) => {
+                cartHTML += `
+                    <div class="cart-item d-flex align-items-center mb-4 p-4">
+                        <div class="item-image me-4">
+                            <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <div class="item-details flex-fill">
+                            <h5 class="item-name">${item.name}</h5>
+                            <p class="item-category text-muted">${item.category}</p>
+                            <div class="item-price">
+                                <strong>${formatCurrency(item.price)}/ngày</strong>
+                            </div>
+                        </div>
+                        <div class="item-quantity">
+                            <button class="btn-outline-secondary" onclick="updateQuantity(${index}, ${item.quantity - 1})">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="mx-3">${item.quantity}</span>
+                            <button class="btn-outline-secondary" onclick="updateQuantity(${index}, ${item.quantity + 1})">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="item-total ms-4">
+                            <strong>${formatCurrency(item.price * item.quantity)}</strong>
+                        </div>
+                        <div class="item-actions ms-3">
+                            <button class="btn-outline-danger" onclick="removeFromCart(${index})" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const serviceFee = 50000;
+            const discount = 0;
+            const finalTotal = subtotal + serviceFee - discount;
+
+            cartHTML += `
+                        </div>
+                        <div class="cart-actions mt-4">
+                            <button class="btn-outline-primary me-3" onclick="clearCart()">
+                                <i class="fas fa-trash"></i> Xóa tất cả
+                            </button>
+                            <a href="camera-rental.html" class="btn-outline-primary">
+                                <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="cart-summary">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Tóm tắt đơn hàng</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="discount-code mb-4">
+                                        <label class="form-label">Mã giảm giá</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Nhập mã giảm giá" id="discount-code">
+                                            <button class="btn btn-outline-primary" onclick="applyDiscount()">Áp dụng</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="summary-item">
+                                        <span>Tạm tính:</span>
+                                        <span>${formatCurrency(subtotal)}</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span>Phí dịch vụ:</span>
+                                        <span>${formatCurrency(serviceFee)}</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span>Giảm giá:</span>
+                                        <span>-${formatCurrency(discount)}</span>
+                                    </div>
+                                    <div class="summary-item" style="border-top: 2px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;">
+                                        <strong>Tổng cộng:</strong>
+                                        <strong>${formatCurrency(finalTotal)}</strong>
+                                    </div>
+                                    
+                                    <button class="btn-primary w-100 mt-4" onclick="showPaymentModal()">
+                                        <i class="fas fa-credit-card"></i> Thanh toán
+                                    </button>
+                                    
+                                    <div class="payment-security mt-3 text-center">
+                                        <small class="text-muted">
+                                            <i class="fas fa-shield-alt"></i> Thanh toán an toàn & bảo mật
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            cartContent.innerHTML = cartHTML;
+        }
+
+        function updateQuantity(index, newQuantity) {
+            updateCartItemQuantity(index, newQuantity);
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function applyDiscount() {
+            const discountCode = document.getElementById('discount-code').value.trim();
+            if (discountCode === 'LENSCAM10') {
+                showNotification('Áp dụng mã giảm giá thành công! Giảm 10%', 'success');
+                loadCartItems(); // Reload to update totals
+            } else if (discountCode) {
+                showNotification('Mã giảm giá không hợp lệ', 'error');
+            }
+        }
+
+        function showPaymentModal() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                showNotification('Giỏ hàng trống!', 'error');
+                return;
+            }
+            
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'block';
+            modal.classList.add('show');
+
+            // Update checkout items in modal
+            updateCheckoutSummary();
+            
+            // Generate order code for QR
+            const orderCode = 'LC' + Date.now().toString().slice(-6);
+            document.getElementById('transfer-content').textContent = `LENSCAMDIO ${orderCode}`;
+            document.getElementById('bank-transfer-content').textContent = `LENSCAMDIO ${orderCode}`;
+            
+            // Update QR code
+            const qrImg = document.querySelector('#qr-code img');
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=LENSCAMDIO-${orderCode}`;
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+
+        function updateCheckoutSummary() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const checkoutItems = document.getElementById('checkout-items');
+            
+            let itemsHTML = '';
+            cart.forEach(item => {
+                itemsHTML += `
+                    <div class="checkout-item d-flex justify-content-between mb-2">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>${formatCurrency(item.price * item.quantity)}</span>
+                    </div>
+                `;
+            });
+            
+            checkoutItems.innerHTML = itemsHTML;
+            
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const serviceFee = 50000;
+            const discount = 0;
+            const finalTotal = subtotal + serviceFee - discount;
+            
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('service-fee').textContent = formatCurrency(serviceFee);
+            document.getElementById('discount').textContent = '-' + formatCurrency(discount);
+            document.getElementById('final-total').textContent = formatCurrency(finalTotal);
+        }
+
+        // Payment method selection
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.payment-method')) {
+                const method = e.target.closest('.payment-method');
+                const methodType = method.dataset.method;
+                
+                // Remove active class from all methods
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.payment-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to selected method
+                method.classList.add('active');
+                document.getElementById(methodType + '-payment').classList.add('active');
+            }
+        });
+
+        function processPayment() {
+            const customerName = document.getElementById('customer-name').value.trim();
+            const customerPhone = document.getElementById('customer-phone').value.trim();
+            
+            if (!customerName || !customerPhone) {
+                showNotification('Vui lòng điền đầy đủ thông tin khách hàng', 'error');
+                return;
+            }
+            
+            // Get selected payment method
+            const activeMethod = document.querySelector('.payment-method.active').dataset.method;
+            
+            // If card payment, validate card information
+            if (activeMethod === 'card') {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvv = document.getElementById('card-cvv').value;
+                const cardName = document.getElementById('card-name').value.trim().toUpperCase();
+                
+                if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
+                    showNotification('Vui lòng điền đầy đủ thông tin thẻ', 'error');
+                    return;
+                }
+                
+                // Check against sample card
+                const validCard = {
+                    number: '4111111111111111',
+                    expiry: '12/25',
+                    cvv: '123',
+                    name: 'NGUYEN VAN A'
+                };
+                
+                if (cardNumber !== validCard.number || 
+                    cardExpiry !== validCard.expiry || 
+                    cardCvv !== validCard.cvv || 
+                    cardName !== validCard.name) {
+                    showNotification('Thông tin thẻ không hợp lệ! Vui lòng sử dụng thẻ demo được cung cấp.', 'error');
+                    return;
+                }
+                
+                showNotification('Xác thực thẻ thành công!', 'success');
+            }
+            
+            // Show loading state
+            const paymentBtn = document.querySelector('.modal-footer .btn-primary');
+            const originalText = paymentBtn.innerHTML;
+            paymentBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            paymentBtn.disabled = true;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Generate order code
+                const orderCode = 'LC' + Date.now().toString().slice(-6);
+                
+                // Determine payment method name
+                const paymentMethodNames = {
+                    'qr': 'Quét mã QR',
+                    'card': 'Thẻ tín dụng',
+                    'bank': 'Chuyển khoản ngân hàng'
+                };
+                
+                // Save order to localStorage
+                const order = {
+                    code: orderCode,
+                    items: JSON.parse(localStorage.getItem('cart')) || [],
+                    customer: {
+                        name: customerName,
+                        phone: customerPhone,
+                        email: document.getElementById('customer-email').value,
+                        note: document.getElementById('customer-note').value
+                    },
+                    paymentMethod: paymentMethodNames[activeMethod],
+                    status: 'pending',
+                    createdAt: new Date().toISOString(),
+                    total: document.getElementById('final-total').textContent
+                };
+                
+                // Save to orders list
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                orders.unshift(order);
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                // Clear cart
+                localStorage.removeItem('cart');
+                updateCartBadge();
+                
+                // Close payment modal
+                closePaymentModal();
+                
+                // Show success modal
+                document.getElementById('order-code').textContent = orderCode;
+                const successModal = document.getElementById('successModal');
+                successModal.style.display = 'block';
+                successModal.classList.add('show');
+                
+                // Reset payment button
+                paymentBtn.innerHTML = originalText;
+                paymentBtn.disabled = false;
+                
+                showNotification('Thanh toán thành công!', 'success');
+            }, 2000);
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+            
+            // Redirect to home
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        }
+
+        function goToOrderTracking() {
+            window.location.href = 'order-tracking.html';
+        }
+
+        // Add styles for payment modal
+        const styles = `
+            <style>
+                .modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 9999;
+                    backdrop-filter: blur(4px);
+                    overflow-y: auto;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 1rem;
+                }
+                
+                .modal-dialog {
+                    position: relative;
+                    width: 100%;
+                    max-width: 900px;
+                    max-height: calc(100vh - 2rem);
+                    margin: 0;
+                }
+                
+                .modal-content {
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+                    max-height: calc(100vh - 2rem);
+                    overflow-y: auto;
+                }
+                
+                .modal-header {
+                    padding: 1.5rem;
+                    border-bottom: 1px solid #e2e8f0;
+                    display: flex;
+                    justify-content: between;
+                    align-items: center;
+                }
+                
+                .modal-title {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    margin: 0;
+                }
+                
+                .btn-close {
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    margin-left: auto;
+                }
+                
+                .modal-body {
+                    padding: 1.5rem;
+                }
+                
+                .modal-footer {
+                    padding: 1.5rem;
+                    border-top: 1px solid #e2e8f0;
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: flex-end;
+                }
+                
+                .payment-methods {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                    margin-bottom: 1.5rem;
+                }
+                
+                .payment-method {
+                    display: flex;
+                    align-items: center;
+                    padding: 1rem;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .payment-method.active {
+                    border-color: var(--primary-color);
+                    background: rgba(59, 130, 246, 0.05);
+                }
+                
+                .payment-method i {
+                    margin-right: 1rem;
+                    font-size: 1.2rem;
+                    color: var(--primary-color);
+                }
+                
+                .payment-content {
+                    display: none;
+                }
+                
+                .payment-content.active {
+                    display: block;
+                }
+                
+                .qr-code-container {
+                    padding: 1rem;
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    margin: 1rem 0;
+                }
+                
+                .order-summary {
+                    background: #f8fafc;
+                    padding: 1.5rem;
+                    border-radius: 8px;
+                }
+                
+                .checkout-item {
+                    padding: 0.5rem 0;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                
+                .order-total {
+                    margin-top: 1rem;
+                    padding-top: 1rem;
+                    border-top: 2px solid #e2e8f0;
+                }
+                
+                .total-row {
+                    display: flex;
+                    justify-content: between;
+                    padding: 0.5rem 0;
+                }
+                
+                .total-row.final {
+                    font-size: 1.1rem;
+                    border-top: 1px solid #e2e8f0;
+                    margin-top: 0.5rem;
+                    padding-top: 1rem;
+                }
+                
+                .bank-info {
+                    background: #f8fafc;
+                    padding: 1rem;
+                    border-radius: 8px;
+                    margin-top: 1rem;
+                }
+                
+                .bank-details p {
+                    margin: 0.5rem 0;
+                }
+                
+                .me-3 { margin-right: 1rem; }
+                .ms-3 { margin-left: 1rem; }
+                .ms-4 { margin-left: 1.5rem; }
+                .me-4 { margin-right: 1.5rem; }
+                .mt-4 { margin-top: 1.5rem; }
+                
+                /* Order tracking button styles */
+                .order-tracking-btn {
+                    background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+                    color: white !important;
+                    border-radius: 8px;
+                    padding: 0.5rem 1rem;
+                    transition: all 0.3s ease;
+                    border: none;
+                }
+                
+                .order-tracking-btn:hover {
+                    background: linear-gradient(135deg, #1e40af, #1e3a8a) !important;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+                }
+                
+                .cart-actions {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 1rem;
+                    flex-wrap: wrap;
+                }
+                
+                .cart-actions .btn-outline-primary {
+                    min-width: 150px;
+                    white-space: nowrap;
+                }
+                
+                @media (max-width: 768px) {
+                    .cart-actions {
+                        flex-direction: column;
+                        gap: 0.75rem;
+                    }
+                    
+                    .cart-actions .btn-outline-primary {
+                        width: 200px;
+                    }
+                }
+                
+                /* Modal Responsive */
+                @media (max-width: 768px) {
+                    .modal {
+                        padding: 0.5rem;
+                    }
+                    
+                    .modal-dialog {
+                        max-width: 100%;
+                        max-height: calc(100vh - 1rem);
+                    }
+                    
+                    .modal-content {
+                        max-height: calc(100vh - 1rem);
+                    }
+                    
+                    .modal-header,
+                    .modal-body,
+                    .modal-footer {
+                        padding: 1rem;
+                    }
+                    
+                    .modal-body .row {
+                        margin: 0;
+                    }
+                    
+                    .modal-body .col-md-6 {
+                        padding: 0 0.5rem;
+                        margin-bottom: 1rem;
+                    }
+                    
+                    .qr-code-container img {
+                        width: 150px !important;
+                        height: 150px !important;
+                    }
+                }
+                
+                @media (max-width: 576px) {
+                    .modal {
+                        padding: 0.25rem;
+                    }
+                    
+                    .modal-body .col-md-6 {
+                        flex: 0 0 100%;
+                        max-width: 100%;
+                        padding: 0;
+                    }
+                    
+                    .payment-methods {
+                        margin-bottom: 1rem;
+                    }
+                    
+                    .payment-method {
+                        padding: 0.75rem;
+                    }
+                    
+                    .qr-code-container img {
+                        width: 120px !important;
+                        height: 120px !important;
+                    }
+                }
+            </style>
+        `;
+        
+        document.head.insertAdjacentHTML('beforeend', styles);
+        
+        // Card number formatting
+        document.addEventListener('input', function(e) {
+            if (e.target.id === 'card-number') {
+                let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
+                e.target.value = formattedValue;
+            }
+            
+            if (e.target.id === 'card-expiry') {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substr(0, 2) + '/' + value.substr(2, 2);
+                }
+                e.target.value = value;
+            }
+            
+            if (e.target.id === 'card-cvv') {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            }
+        });
+    </script>
+</body>
+</html> 
