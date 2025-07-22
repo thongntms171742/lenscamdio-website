@@ -2,7 +2,7 @@ services:
   - type: web
     name: lenscamdio-website
     env: static
-    buildCommand: ""
+    buildCommand: echo "No build needed for static site"
     staticPublishPath: .
     routes:
       - type: rewrite
