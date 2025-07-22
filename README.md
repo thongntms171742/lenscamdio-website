@@ -53,6 +53,30 @@ Website tối ưu cho:
 - Nội dung: Chỉnh sửa trực tiếp trong các file HTML
 - Tính năng: Chỉnh sửa trong file `script.js`
 
+## 🚀 Deployment (Triển khai)
+
+### Render.com
+Website này được thiết kế để deploy trên Render với cấu hình static site:
+
+1. **Cách 1: Sử dụng render.yaml (Khuyến nghị)**
+   - File `render.yaml` đã được cấu hình sẵn
+   - Chỉ cần connect repository với Render
+
+2. **Cách 2: Cấu hình thủ công**
+   - **Build Command:** Để trống hoặc `echo "Static site"`
+   - **Publish Directory:** `.` (thư mục gốc)
+   - **Environment:** Static Site
+
+### Netlify
+- Drag & drop thư mục project vào Netlify
+- File `_redirects` đã được cấu hình cho SPA routing
+
+### Vercel
+- Import repository từ GitHub
+- Framework: Other
+- Build Command: Để trống
+- Output Directory: `.`
+
 ## 📞 Hỗ trợ
 Nếu cần hỗ trợ, vui lòng liên hệ.
 
